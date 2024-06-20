@@ -82,7 +82,7 @@ def adem_relation(list_monomial_power):
     else:
         a = list_monomial_power[0]
         b = list_monomial_power[1]
-        for i in range(max(a - b + 1, 0), ((a & 0XFFFFFFFE) >> 1) + 1): 
+        for i in range(max(a - b + 1, 0), (a >> 1) + 1): 
             c = bin_coeff(b - i - 1, a - 2*i)
             if not (c & 0X00000001): 
                 continue
