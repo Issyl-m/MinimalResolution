@@ -3,6 +3,7 @@
 ##################################################################################
 ########################### Coded by andres.moran.l@uc.cl ########################
 ##################################################################################
+
 import _pickle as cPickle 
 import os
 
@@ -41,7 +42,7 @@ def is_admissible(list_monomial_power):
         if i + 1 < len_list_monomial_power:
             r = r and (list_monomial_power[i] >= 2*list_monomial_power[i + 1])
         else:
-            break 
+            break ## TODO: rewrite
 
     return r
 
@@ -54,7 +55,7 @@ def search_non_admissible(list_monomial_power):
         if i + 1 < len_list_monomial_power:
             if list_monomial_power[i] < 2*list_monomial_power[i + 1]:
                 r = i
-                break 
+                break ## TODO: rewrite
 
     return r
 
@@ -83,7 +84,7 @@ def adem_relation(list_monomial_power):
         b = list_monomial_power[1]
         for i in range(max(a - b + 1, 0), ((a & 0XFFFFFFFE) >> 1) + 1): 
             c = bin_coeff(b - i - 1, a - 2*i)
-            if (c & 0X00000001) == 0: 
+            if not (c & 0X00000001): 
                 continue
             else:
                 if i == 0:
@@ -148,6 +149,7 @@ def bin_length(k):
         k_binary_length += 1
 
     return k_binary_length
+
 def get_admissible_generators_for_degree(k, k_binary_length = -1): 
     list_list_generators = []
 
@@ -160,8 +162,7 @@ def get_admissible_generators_for_degree(k, k_binary_length = -1):
         else:
             for biggest_power in range(2**(fixed_length_product_monomials-1), k - fixed_length_product_monomials + 2):
                 list_list_admissible_generators = get_admissible_generators_for_degree(k-biggest_power, fixed_length_product_monomials - 1)
-                
-                
+                            
                 for j in range(0, len(list_list_admissible_generators)):
                     list_list_admissible_generators[j].insert(0, biggest_power)
 
@@ -173,6 +174,7 @@ def get_admissible_generators_for_degree(k, k_binary_length = -1):
 
 def get_generator_zero_row(column):
     return [column] 
+
 def multiply_by_right_at_deg(deg, sq_concat):
     list_generators = []
 
@@ -186,6 +188,7 @@ def multiply_by_right_at_deg(deg, sq_concat):
             list_generators[k].append(sq_concat)
         
     return list_generators
+
 def get_admissible_generators_for_coord(x, y):
     list_generators = []
 
@@ -195,6 +198,7 @@ def get_admissible_generators_for_coord(x, y):
         list_generators = get_admissible_generators_in_column(x, y)
 
     return list_generators
+
 def get_admissible_generators_in_column(col_number, deg):
     list_generators = []
 
@@ -378,7 +382,7 @@ def compute_free_resolution():
                         list_found_generators[i].append((deg_new_generator, r))
                     
                     DBG('[*] New generator(s): ', i, j, 'dimension: ' + str(kernel_dim_to_kill), 'degree:', str(i + j))
-
+                    
     return 
 
 list_admissible_generators_by_deg = []
