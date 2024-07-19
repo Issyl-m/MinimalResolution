@@ -31,7 +31,7 @@ def factorial(n):
     return r
 
 def bin_coeff(n, k): 
-    return int( factorial(n) / (factorial(k)*factorial(n-k)) ) 
+    return factorial(n) // (factorial(k)*factorial(n-k))
 
 def is_admissible(list_monomial_power): 
     r = True
