@@ -30,10 +30,10 @@ BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE = False
 
 FIXED_PRIME_NUMBER = 3
 
-MAX_NUMBER_OF_RELATIVE_DEGREES = 110 # 130
+MAX_NUMBER_OF_RELATIVE_DEGREES = 130 # 130
 MAX_NUMBER_OF_MODULES = MAX_NUMBER_OF_RELATIVE_DEGREES
 
-NUMBER_OF_THREADS = 200
+NUMBER_OF_THREADS = 100
 DEFAULT_YONEDA_PRODUCT_MAX_DEG = 20 # DEPRECATED
 
 ## UTILS
@@ -1074,6 +1074,8 @@ class MinimalResolution:
                 ), self.getElementsByRelativeDeg, external_resolution.getElementsByRelativeDeg, dom_module_index+module_index_shift, module_index_shift)
             )
 
+            print(f"[+] ({map_gen_to_lift}) lifted (until deg: {module_index_shift}).")
+
             if bool_empty_morphism:
                 break
 
@@ -1086,7 +1088,7 @@ class MinimalResolution:
         #DBG(list_lifted_map)
         
         with mgr_lock:
-            list_list_output[list_index] = [[external_resolution, map_gen_to_lift, max_cod_module_index, list_lifted_map]]
+            list_list_output[list_index] = [[0, map_gen_to_lift, max_cod_module_index, list_lifted_map]] # The first entry should be some sort of hash
             # [[external_resolution, map_gen_to_lift, max_cod_module_index, list_lifted_map]]
             
         #DBG(list_list_output)
@@ -1601,12 +1603,12 @@ if not minimalResolution:
     ## -- 
     
     cbk_filter = lambda x: True if (x.module_index, x.deg) == (0, 18) else False
-    cbk_max_deg = lambda x: MAX_NUMBER_OF_MODULES - x.deg
+    cbk_max_deg = lambda x: MAX_NUMBER_OF_MODULES - x.deg - 30
     minimalResolution.multiprocess_cochain_lift(minimalResolutionSphere, cbk_filter, cbk_max_deg) ## GEN_CALLBACK = lambda x: True
     
     minimalResolution.retrieve_yoneda_products(minimalResolutionSphere)
 
-    dump_object(minimalResolution, str_output_file_module)
+    dump_object(minimalResolution.list_lifted_maps, f"{str_output_file_module}__lifts_")
 
     print("Saved computations.")
 
