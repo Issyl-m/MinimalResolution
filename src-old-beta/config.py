@@ -1,0 +1,4 @@
+# Global parameters
+
+MAX_NUMBER_OF_ROWS = 30 
+MAX_NUMBER_OF_COLS = MAX_NUMBER_OF_ROWS

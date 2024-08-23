@@ -1,4 +1,4 @@
-# MinimalResolution
+# MinimalResolution [UNDER CONSTRUCTION]
 
 Proof-of-concept of computing minimal resolutions over the mod 2 Steenrod algebra written by me. This program constructs a free resolution of $\mathbb{F}_2$ as an $\mathcal{A}_2-$module.
 
