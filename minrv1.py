@@ -1814,7 +1814,7 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators(
 
         # TODO: freeness criterion
         bool_free_module_generator = False
-        if k in [4, 12, 36]:
+        if k in [4, 12, 36, 108]:
             bool_free_module_generator = True
 
         i, j = deg2tuple(k)
@@ -1877,11 +1877,11 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations(
 
         ## TODO: bool_free_module_generator
         bool_free_module_generator = False
-        if int_deg in [4, 12, 36]:
+        if int_deg in [4, 12, 36, 108]:
             bool_free_module_generator = True
 
         bool_free_module_generator_img = False
-        if int_deg + 1 in [4, 12, 36]:
+        if int_deg + 1 in [4, 12, 36, 108]:
             bool_free_module_generator_img = True
 
         current_element = Element(
@@ -1912,7 +1912,7 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations(
 
         for k in range(1, int_deg + 1):
             bool_free_module_generator_img = False
-            if int_deg + k in [4, 12, 36]:
+            if int_deg + k in [4, 12, 36, 108]:
                 bool_free_module_generator_img = True
 
             c_power = power_coeff((i, j), k)
