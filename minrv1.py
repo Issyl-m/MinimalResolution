@@ -37,7 +37,7 @@ FIXED_PRIME_NUMBER = 3
 MAX_NUMBER_OF_RELATIVE_DEGREES = 130  ## 130
 MAX_NUMBER_OF_MODULES = MAX_NUMBER_OF_RELATIVE_DEGREES
 
-NUMBER_OF_THREADS = 20  # 100
+NUMBER_OF_THREADS = 200  # 100
 DEFAULT_YONEDA_PRODUCT_MAX_DEG = 20  # DEPRECATED
 
 UI_SHIFT_MULTIPLE_GENERATORS = 0.1
@@ -2148,7 +2148,7 @@ print_banner()
 starting_time = time.time()
 
 str_name_sphere = "Sphere"
-str_name_module_to_resolve = "S_rho_D_3__p-odd"  # "S_rho_D_3__p-even"
+str_name_module_to_resolve = "Sphere"  # "S_rho_D_3__p-odd"  # "S_rho_D_3__p-even"
 # str_name_module_to_resolve = "Sphere"
 
 str_output_file_sphere = f"{FIXED_PRIME_NUMBER}-{str_name_sphere}_{MAX_NUMBER_OF_RELATIVE_DEGREES}_{DEFAULT_YONEDA_PRODUCT_MAX_DEG}"
@@ -2204,9 +2204,9 @@ if not minimalResolution:
     ###################minimalResolution.createModule(callback_coh_p_odd_representation_sphere_rho_d_3_presentation) # Finitely presented module to resolve
 
     callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
-        "Cohomology of representation sphere S^{\\rho}_{D_3} (p: odd)",
-        callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
-        callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
+        "Cohomology of the 3-local sphere" # "Cohomology of representation sphere S^{\\rho}_{D_3} (p: odd)",
+        callback_coh_sphere_generators # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
+        callback_coh_sphere_relations # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
         MAX_NUMBER_OF_RELATIVE_DEGREES,
     )
     minimalResolution.createModule(
@@ -2227,7 +2227,7 @@ if BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE:
 minimalResolution_lifts = load_object(f"{str_output_file_module}__lifts_")
 if not minimalResolution_lifts:
     cbk_filter = (
-        lambda x: True if (x.module_index, x.deg - x.module_index) == (0, 18) else False
+        lambda x: True # if (x.module_index, x.deg - x.module_index) == (0, 18) else False
     )
     cbk_max_deg = lambda x: MAX_NUMBER_OF_MODULES - x.deg
     minimalResolution.multiprocess_cochain_lift(
