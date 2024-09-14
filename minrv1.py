@@ -1348,7 +1348,7 @@ class MinimalResolution:
         list_index,
         mgr_lock,
     ):
-        if (
+        if (  # TODO: cheap "optimization", remove
             map_gen_to_lift.generator.module_index == map_gen_to_lift.generator.deg
             and map_gen_to_lift.generator.deg > 1
         ):
