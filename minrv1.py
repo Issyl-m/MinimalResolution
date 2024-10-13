@@ -32,12 +32,12 @@ from functools import cache
 
 BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE = False
 
-FIXED_PRIME_NUMBER = 3
+FIXED_PRIME_NUMBER = 2
 
-MAX_NUMBER_OF_RELATIVE_DEGREES = 130  ## 130
+MAX_NUMBER_OF_RELATIVE_DEGREES = 30  # 100  ## 130
 MAX_NUMBER_OF_MODULES = MAX_NUMBER_OF_RELATIVE_DEGREES
 
-NUMBER_OF_THREADS = 200  # 100
+NUMBER_OF_THREADS = 5  # 40  # 100
 DEFAULT_YONEDA_PRODUCT_MAX_DEG = 20  # DEPRECATED
 
 UI_SHIFT_MULTIPLE_GENERATORS = 0.1
@@ -1348,14 +1348,14 @@ class MinimalResolution:
         list_index,
         mgr_lock,
     ):
-        if (  # TODO: cheap "optimization", remove
-            map_gen_to_lift.generator.module_index == map_gen_to_lift.generator.deg
-            and map_gen_to_lift.generator.deg > 1
-        ):
-            list_list_output[list_index] = [
-                [external_resolution, map_gen_to_lift, max_cod_module_index, 0]
-            ]
-            return
+        # if (  # TODO: cheap "optimization", remove
+        #    map_gen_to_lift.generator.module_index == map_gen_to_lift.generator.deg
+        #    and map_gen_to_lift.generator.deg > 1
+        # ):
+        #    list_list_output[list_index] = [
+        #        [external_resolution, map_gen_to_lift, max_cod_module_index, 0]
+        #    ]
+        #    return
 
         dom_module_index = map_gen_to_lift.generator.module_index
         cod_module_index = 0
@@ -2203,14 +2203,22 @@ if not minimalResolution:
     ###################)
     ###################minimalResolution.createModule(callback_coh_p_odd_representation_sphere_rho_d_3_presentation) # Finitely presented module to resolve
 
-    callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
-        "Cohomology of the 3-local sphere",  # "Cohomology of representation sphere S^{\\rho}_{D_3} (p: odd)",
-        callback_coh_sphere_generators,  # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
-        callback_coh_sphere_relations,  # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
-        MAX_NUMBER_OF_RELATIVE_DEGREES,
+    # callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
+    #    "Cohomology of the 3-local sphere",  # "Cohomology of representation sphere S^{\\rho}_{D_3} (p: odd)",
+    #    callback_coh_sphere_generators,  # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
+    #    callback_coh_sphere_relations,  # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
+    #    MAX_NUMBER_OF_RELATIVE_DEGREES,
+    # )
+    #
+    callback_coh_sphere_presentation = FPModule(
+        "Cohomology of the 2-local sphere",
+        callback_coh_sphere_generators,
+        callback_coh_sphere_relations,
+        0,
     )
     minimalResolution.createModule(
-        callback_coh_p_odd_representation_sphere_rho_d_3_presentation
+        callback_coh_sphere_presentation
+        # callback_coh_p_odd_representation_sphere_rho_d_3_presentation
     )  # Finitely presented module to resolve
     minimalResolution.construct()
 
