@@ -10,14 +10,12 @@ import os
 import sys  # ~unused, sys.maxsize
 
 import time
-import gc  # ~unused
 
-# from sage.all import * # WARNING (BAD PERFORMANCE)
+#######from sage.all import * # WARNING (BAD PERFORMANCE)
 from sage.rings.finite_rings.finite_field_constructor import (
     GF,
 )  # WARNING (BAD PERFORMANCE)
-# WARNING (BAD PERFORMANCE)
-from sage.matrix.constructor import matrix as Matrix
+from sage.matrix.constructor import matrix as Matrix  # WARNING (BAD PERFORMANCE)
 from sage.algebras.steenrod.steenrod_algebra import (
     SteenrodAlgebra,
 )  # WARNING (BAD PERFORMANCE)
@@ -44,7 +42,7 @@ DEFAULT_YONEDA_PRODUCT_MAX_DEG = 20  # DEPRECATED
 
 UI_SHIFT_MULTIPLE_GENERATORS = 0.1
 
-# UTILS
+## UTILS
 
 
 def DBG(*var):
@@ -59,8 +57,7 @@ def printl(list):
 
 
 def print_banner():
-    print_header(
-        "[[ MinimalResolution v1 - andres.moran.l@uc.cl ]]", "#", True)
+    print_header("[[ MinimalResolution v1 - andres.moran.l@uc.cl ]]", "#", True)
 
 
 def print_header(str_txt, char_delim, bool_print_lateral):
@@ -109,8 +106,7 @@ def load_object(str_name):
             r = cPickle.load(file_minimalresolution)
 
             print("#" * 120)
-            print(
-                f"[*] Minimal resolution object loaded from ./{str_loaded_path}.")
+            print(f"[*] Minimal resolution object loaded from ./{str_loaded_path}.")
             print("#" * 120)
     else:
         r = False
@@ -139,16 +135,14 @@ def bin_coeff(n, k):
     return factorial(n) // (factorial(k) * factorial(n - k))
 
 
-# CLASSES
+## CLASSES
 
 
 class FPModule:
     def __init__(self, str_name, callback_generators, callback_relations, max_deg):
         self.str_name = str_name
-        self.callback_generators = lambda x, y: callback_generators(
-            x, y, max_deg)
-        self.callback_relations = lambda x, y: callback_relations(
-            x, y, max_deg)
+        self.callback_generators = lambda x, y: callback_generators(x, y, max_deg)
+        self.callback_relations = lambda x, y: callback_relations(x, y, max_deg)
 
 
 class FPMap:
@@ -382,7 +376,7 @@ class Morphism:
         list_list_images,
         tuple_dom=(-1, -1),
         tuple_cod=(-1, -1),
-    ):  # TODO: diff. coord.
+    ):  ## TODO: diff. coord.
         self.list_dom_basis = self.sanitizeRedundant(list_dom_basis)
         self.list_cod_basis = self.sanitizeRedundant(list_cod_basis)
         self.list_list_images = list_list_images
@@ -391,8 +385,7 @@ class Morphism:
 
         self.matrix = Matrix(
             GF(fixed_prime),
-            self.getListListMatrix(
-                list_dom_basis, list_cod_basis, list_list_images),
+            self.getListListMatrix(list_dom_basis, list_cod_basis, list_list_images),
             sparse=True,
         )
 
@@ -435,19 +428,17 @@ class Morphism:
 
     def OLDgetListListMatrix(
         self, list_dom_basis, list_cod_basis, list_list_images
-    ):  # TODO: remove
+    ):  ## TODO: remove
         dim_cod = len(list_cod_basis)
         dim_dom = len(list_dom_basis)  # = len(list_list_images)
 
-        list_list_matrix = [[0] * max(1, dim_dom)
-                            for k in range(0, max(1, dim_cod))]
+        list_list_matrix = [[0] * max(1, dim_dom) for k in range(0, max(1, dim_cod))]
 
         for i in range(0, dim_dom):
             for j in range(0, dim_cod):
                 for k in range(0, len(list_list_images[i])):
                     for monomial_index in range(
-                        0, len(list_list_images[i]
-                               [k].cohomology_operation.terms())
+                        0, len(list_list_images[i][k].cohomology_operation.terms())
                     ):
                         monomial = list_list_images[i][k].cohomology_operation.terms()[
                             monomial_index
@@ -458,7 +449,7 @@ class Morphism:
                             list_list_images[i][k].generator
                             == list_cod_basis[j].generator
                         ):
-                            bool_monomial_patch = False  # TODO: warning...
+                            bool_monomial_patch = False  ## TODO: warning...
                             if (
                                 monomial.leading_monomial().trailing_support()
                                 in [tuple([]), (0,)]
@@ -480,7 +471,7 @@ class Morphism:
                                     / list_cod_basis[
                                         j
                                     ].cohomology_operation.leading_coefficient()
-                                )  # 1, ..., p-1
+                                )  ############ 1, ..., p-1
 
         return list_list_matrix
 
@@ -488,8 +479,7 @@ class Morphism:
         dim_cod = len(list_cod_basis)
         dim_dom = len(list_dom_basis)  # = len(list_list_images)
 
-        list_list_matrix = [[0] * max(1, dim_dom)
-                            for k in range(0, max(1, dim_cod))]
+        list_list_matrix = [[0] * max(1, dim_dom) for k in range(0, max(1, dim_cod))]
 
         for i in range(0, dim_dom):
             for j in range(0, dim_cod):
@@ -527,7 +517,7 @@ class Morphism:
                             list_list_images[i][k].generator
                             == list_cod_basis[j].generator
                         ):
-                            bool_monomial_patch = False  # TODO: warning...
+                            bool_monomial_patch = False  ## TODO: warning...
                             if monomial_support in [
                                 tuple([]),
                                 (0,),
@@ -547,7 +537,7 @@ class Morphism:
 
     def convertKernelBasisToListOfVectors(
         self, sage_matrix_kernel_basis
-    ):  # TODO: suspicious
+    ):  ## TODO: suspicious
         list_kernel_generators = []
 
         if len(self.list_dom_basis) > 0:
@@ -658,19 +648,16 @@ class MinimalResolution:
                     lift_ev_module_free_generator.generator
                 )  # we don't need the extra structure for generators
                 list_mapping_table.append(
-                    MTEntry(lift_ev_module_free_generator,
-                            [ev_module_generator])
+                    MTEntry(lift_ev_module_free_generator, [ev_module_generator])
                 )
 
         self.list_list_mapping_table.append(list_mapping_table)
         self.list_list_found_generators.append(list_found_generators)
 
-        print_header(
-            f"Table of generators ({self.str_name}) [JSON]", "=", False)
+        print_header(f"Table of generators ({self.str_name}) [JSON]", "=", False)
 
         list_json_generators = [
-            f'\t"{generator_element.generator.str_alias.replace("\\", "\\\\").replace(" ", "_")}": {
-                generator_element.generator.deg}'
+            f'\t"{generator_element.generator.str_alias.replace("\\", "\\\\").replace(" ", "_")}": {generator_element.generator.deg}'
             for generator_element in self.list_module_to_resolve_ev_gen
         ]
 
@@ -680,8 +667,7 @@ class MinimalResolution:
             self.A, self.fixed_prime
         )
 
-        print_header(
-            f"Table of relations ({self.str_name}) [JSON]", "=", False)
+        print_header(f"Table of relations ({self.str_name}) [JSON]", "=", False)
 
         if len(self.list_module_to_resolve_relations) == 0:
             print(f"(There are no extra relations)")
@@ -694,8 +680,7 @@ class MinimalResolution:
                     bool_found = True
             if bool_found:
                 print(
-                    f'"{str(relation.steenrod_operation).replace("^", "").replace("beta", "b")} {relation.module_element.generator.str_alias.replace(
-                        "\\", "\\\\").replace(" ", "_")} = {relation.list_sum_output[0].generator.str_alias.replace("\\", "\\\\").replace(" ", "_")}",'
+                    f'"{str(relation.steenrod_operation).replace("^", "").replace("beta", "b")} {relation.module_element.generator.str_alias.replace("\\", "\\\\").replace(" ", "_")} = {relation.list_sum_output[0].generator.str_alias.replace("\\", "\\\\").replace(" ", "_")}",'
                 )
 
         return
@@ -730,7 +715,7 @@ class MinimalResolution:
 
         return r
 
-    def non_free_eval(self, list_elements):  # TODO: BETA
+    def non_free_eval(self, list_elements):  ########## TODO: BETA
         r = []
 
         for element in list_elements:
@@ -749,7 +734,7 @@ class MinimalResolution:
             trailing_support = element.cohomology_operation.trailing_support()
             coh_operation_coeff = (
                 element.cohomology_operation.trailing_coefficient()
-            )  # TODO: IMPLEMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            )  ######### TODO: IMPLEMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             list_splitted_support = self.split_support(trailing_support)
             support_prefix = list_splitted_support[0]
@@ -762,16 +747,16 @@ class MinimalResolution:
             # print(self.A.monomial(support_prefix))
             # print(self.A.monomial(support_coh_operation))
             # print('------------------------')
-            # print('------------------------')
-            # print(f"cohomology operation: {element.cohomology_operation}")
-            # print(f"coh_operation_coeff: {coh_operation_coeff}")
-            # print(self.A.monomial((0,)))
-            # print(self.A.monomial((0,)).trailing_support())
-            # print(f"support: {trailing_support}")
-            # print(f"support prefix: {support_prefix}")
-            # print(f"trailing support: {trailing_support}")
-            # print(f"len trailing support: {len(trailing_support)}")
-            # print('------------------------')
+            ####print('------------------------')
+            ####print(f"cohomology operation: {element.cohomology_operation}")
+            ####print(f"coh_operation_coeff: {coh_operation_coeff}")
+            ####print(self.A.monomial((0,)))
+            ####print(self.A.monomial((0,)).trailing_support())
+            ####print(f"support: {trailing_support}")
+            ####print(f"support prefix: {support_prefix}")
+            ####print(f"trailing support: {trailing_support}")
+            ####print(f"len trailing support: {len(trailing_support)}")
+            ####print('------------------------')
 
             coh_operation = self.A.monomial(support_coh_operation)
 
@@ -779,9 +764,9 @@ class MinimalResolution:
                 support_prefix == (0,)
                 and len(trailing_support) > 0
                 and not support_coh_operation == (0,)
-            ):  # and len(trailing_support) > 0
-                # print(f"omg: {support_coh_operation}")
-                # print(element.cohomology_operation)
+            ):  ## and len(trailing_support) > 0
+                ####print(f"omg: {support_coh_operation}")
+                ####print(element.cohomology_operation)
 
                 for relation in self.list_module_to_resolve_relations:
                     if (
@@ -805,7 +790,7 @@ class MinimalResolution:
                 #    print(element)
                 #    sys.exit()
             elif not support_prefix == (0,):
-                # print(f"evil: {trailing_support}")
+                ####print(f"evil: {trailing_support}")
                 coh_operation_prefix = coh_operation_coeff * self.A.monomial(
                     support_prefix
                 )
@@ -832,9 +817,9 @@ class MinimalResolution:
 
                 r += element_r
             else:
-                # print(f"UNREACHED? {element}")
-                # print(trailing_support)
-                # print(s elf.A.monomial(trailing_support))
+                ####print(f"UNREACHED? {element}")
+                ####print(trailing_support)
+                ####print(s elf.A.monomial(trailing_support))
                 r.append([element])
 
         return r
@@ -878,7 +863,7 @@ class MinimalResolution:
 
         trivial_element = Element(
             self.A_unit, AlgebraGenerator(-2, 0, 0)
-        )  # fix/change
+        )  ## fix/change
 
         for element_1 in list_elements:
             element_added_partially = trivial_element
@@ -905,8 +890,7 @@ class MinimalResolution:
                 continue
 
             list_elements_arranged.append(element_added_partially)
-            list_elements_added_generators.append(
-                list_elements_last_checked_generator)
+            list_elements_added_generators.append(list_elements_last_checked_generator)
 
         return list_elements_arranged
 
@@ -928,8 +912,7 @@ class MinimalResolution:
 
         return self.sum(
             list_img_elements
-            # move # [element_img for element_img in self.sum(list_img_elements) if not element_img.cohomology_operation == 0]
-        )
+        )  # move # [element_img for element_img in self.sum(list_img_elements) if not element_img.cohomology_operation == 0]
 
     def raw_eval(
         self, module_basis_element
@@ -943,7 +926,7 @@ class MinimalResolution:
 
         # DBG('img test:', self.sum(list_img_elements))
 
-        return self.sum(list_img_elements)  # move
+        return self.sum(list_img_elements)  ######## move
 
     def diff(self, resolution_module_subindex, module_relative_deg):
         if resolution_module_subindex > 0:
@@ -991,14 +974,14 @@ class MinimalResolution:
             resolution_module_subindex, module_relative_deg
         )
         # list_cod_basis = self.getElementsByRelativeDeg(resolution_module_subindex-1, module_relative_deg+1)
-        # print('-----------------------------------start')
-        # print(f"dom_basis: {list_dom_basis}")
-        # print(f"cod_basis: {list_cod_basis}")
-        # print(f"list_list_images: {list_list_images}")
-        # print(self.getElementsByRelativeDeg(resolution_module_subindex, module_relative_deg))
-        # print([Element(self.A.monomial((0,)), ExtendedAlgebraGenerator(-1, 1, 1, True, f"x^{1}"))])
-        # r = self.non_free_eval([Element(self.A.monomial((0,)), ExtendedAlgebraGenerator(-1, 1, 1, True, f"x^{1}"))])
-        # print('----------------------------end')
+        ######print('-----------------------------------start')
+        ######print(f"dom_basis: {list_dom_basis}")
+        ######print(f"cod_basis: {list_cod_basis}")
+        ######print(f"list_list_images: {list_list_images}")
+        ######print(self.getElementsByRelativeDeg(resolution_module_subindex, module_relative_deg))
+        ########print([Element(self.A.monomial((0,)), ExtendedAlgebraGenerator(-1, 1, 1, True, f"x^{1}"))])
+        ########r = self.non_free_eval([Element(self.A.monomial((0,)), ExtendedAlgebraGenerator(-1, 1, 1, True, f"x^{1}"))])
+        ######print('----------------------------end')
         d = Morphism(
             self.fixed_prime,
             list_dom_basis,
@@ -1037,7 +1020,7 @@ class MinimalResolution:
                 dim_quot_ker_img = len(list_d_kernel)
 
             else:
-                # Quotient with image
+                ## Quotient with image
 
                 list_dom_higher_deg = self.getElementsByRelativeDeg(
                     resolution_module_subindex + 1, module_relative_deg - 1
@@ -1052,10 +1035,8 @@ class MinimalResolution:
                     list_dom_higher_deg,
                     list_dom_basis,
                     list_list_images_higher_deg,
-                    tuple_dom=(resolution_module_subindex +
-                               1, module_relative_deg - 1),
-                    tuple_cod=(resolution_module_subindex,
-                               module_relative_deg),
+                    tuple_dom=(resolution_module_subindex + 1, module_relative_deg - 1),
+                    tuple_cod=(resolution_module_subindex, module_relative_deg),
                 )
 
                 # if resolution_module_subindex == 0 and module_relative_deg >= 6:
@@ -1140,15 +1121,14 @@ class MinimalResolution:
                 #    sys.exit()
 
                 self.list_list_mapping_table[resolution_module_subindex + 1].append(
-                    MTEntry(element_new_generator,
-                            self.sum(list_quot_ker_img[i]))
+                    MTEntry(element_new_generator, self.sum(list_quot_ker_img[i]))
                 )
 
                 self.list_list_found_generators[resolution_module_subindex + 1].append(
                     element_new_generator.generator
                 )
 
-                # print(f"[+] New generator: [{element_new_generator}] @ F_{"{"+f"{resolution_module_subindex+1}"+"}"} (dim ker: {dim_quot_ker_img}, deg: {module_relative_deg + resolution_module_subindex}).")
+                ###########print(f"[+] New generator: [{element_new_generator}] @ F_{"{"+f"{resolution_module_subindex+1}"+"}"} (dim ker: {dim_quot_ker_img}, deg: {module_relative_deg + resolution_module_subindex}).")
                 # printl(self.list_list_mapping_table)
 
                 # if dim_quot_ker_img > 1:
@@ -1170,8 +1150,7 @@ class MinimalResolution:
                 self.diff(resolution_module_subindex, module_relative_deg)
 
             print(
-                f"[*] Computing minimal resolution until relative degree: {
-                    MAX_NUMBER_OF_RELATIVE_DEGREES - resolution_module_subindex - 1}."
+                f"[*] Computing minimal resolution until relative degree: {MAX_NUMBER_OF_RELATIVE_DEGREES - resolution_module_subindex - 1}."
             )
 
             print("#" * 120)
@@ -1191,8 +1170,7 @@ class MinimalResolution:
                     )
                 )
 
-            self.list_list_expanded_minimal_resolution.append(
-                list_generators_tmp)
+            self.list_list_expanded_minimal_resolution.append(list_generators_tmp)
 
             return self.list_list_expanded_minimal_resolution
 
@@ -1206,11 +1184,10 @@ class MinimalResolution:
 
         for module_index in range(0, len(self.list_list_expanded_minimal_resolution)):
             print("#" * 120)
-            # print(f"[*] Generators of F_{"{"+f"{module_index}"+"}"}:")
+            ######print(f"[*] Generators of F_{"{"+f"{module_index}"+"}"}:")
             print("#" * 120)
             for relative_deg in range(
-                0, len(
-                    self.list_list_expanded_minimal_resolution[module_index])
+                0, len(self.list_list_expanded_minimal_resolution[module_index])
             ):
                 print(
                     self.list_list_expanded_minimal_resolution[module_index][
@@ -1232,8 +1209,7 @@ class MinimalResolution:
             list_list_module = []
 
             for relative_deg in range(
-                0, len(
-                    self.list_list_expanded_minimal_resolution[module_index])
+                0, len(self.list_list_expanded_minimal_resolution[module_index])
             ):
                 list_images = []
 
@@ -1254,7 +1230,7 @@ class MinimalResolution:
                     }
                 )
 
-                # for k in self.list_list_expanded_minimal_resolution[module_index][relative_deg]: print(type(k))
+                ### for k in self.list_list_expanded_minimal_resolution[module_index][relative_deg]: print(type(k))
 
             list_list_min_res.append(list_list_module)
 
@@ -1271,8 +1247,7 @@ class MinimalResolution:
                         "y": str(
                             generator.deg
                             - generator.module_index
-                            + (generator.index - 1) *
-                            UI_SHIFT_MULTIPLE_GENERATORS
+                            + (generator.index - 1) * UI_SHIFT_MULTIPLE_GENERATORS
                         ),
                         "val": str(generator),
                     }
@@ -1287,7 +1262,7 @@ class MinimalResolution:
         callback_get_codomain,
         dom_module_index,
         cod_module_index,
-    ):  # TODO: BUG: varias relaciones
+    ):  ## TODO: BUG: varias relaciones
         list_morphism = []
         # DBG('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', fp_map.list_tuple_domain[0], fp_map.list_tuple_codomain[0])
         # DBG(fp_map) ######### fix zero map
@@ -1300,11 +1275,10 @@ class MinimalResolution:
 
         for i in range(
             0, MAX_NUMBER_OF_RELATIVE_DEGREES - dom_rel_deg
-        ):  # TODO: optimize
+        ):  ## TODO: optimize
             list_list_ordered_img = []
 
-            list_dom_basis = callback_get_domain(
-                dom_module_index, dom_rel_deg + i)
+            list_dom_basis = callback_get_domain(dom_module_index, dom_rel_deg + i)
 
             for base_element in list_dom_basis:
                 list_ordered_img = []
@@ -1325,8 +1299,7 @@ class MinimalResolution:
 
                 list_list_ordered_img.append(list_ordered_img)
 
-            list_cod_basis = callback_get_codomain(
-                cod_module_index, cod_rel_deg + i)
+            list_cod_basis = callback_get_codomain(cod_module_index, cod_rel_deg + i)
 
             list_morphism.append(
                 Morphism(
@@ -1345,8 +1318,7 @@ class MinimalResolution:
     def lift_test(self, external_resolution):
         return self.lift_cochain(
             external_resolution,
-            Element(self.A_unit, ExtendedAlgebraGenerator(
-                1, 4, 1, False, "h_2")),
+            Element(self.A_unit, ExtendedAlgebraGenerator(1, 4, 1, False, "h_2")),
             max_cod_module_index=2,
         )
 
@@ -1357,8 +1329,7 @@ class MinimalResolution:
             lifted_map_tuple = self.list_lifted_maps[i][0]
 
             if (
-                lifted_map_tuple[1:2] == [
-                    external_resolution, map_gen_to_lift][1:2]
+                lifted_map_tuple[1:2] == [external_resolution, map_gen_to_lift][1:2]
             ):  # TODO: implement a hash function to compare these resolutions
                 if max_cod_module_index + 1 <= lifted_map_tuple[2]:
                     if lifted_map_tuple[3] == 0:  # Interpreted as redundant
@@ -1428,8 +1399,7 @@ class MinimalResolution:
 
             last_lifted_map = list_lifted_map[-1]
 
-            print(
-                f"[+] Lift status: ({map_gen_to_lift}):{module_index_shift}.")
+            print(f"[+] Lift status: ({map_gen_to_lift}):{module_index_shift}.")
 
             if (
                 len(self.list_list_found_generators)
@@ -1453,7 +1423,7 @@ class MinimalResolution:
                 )
 
                 if relative_codomain == -1 or relative_codomain == (0, 0):
-                    continue  # assumed as zero
+                    continue  ## assumed as zero
 
                 sphere_resol_diff = (
                     external_resolution.differential.get_morphism_from_bigraded_domain(
@@ -1462,14 +1432,12 @@ class MinimalResolution:
                 )
 
                 if sphere_resol_diff == -1:
-                    continue  # assumed as zero
+                    continue  ## assumed as zero
 
                 try:
-                    vector_img = sphere_resol_diff.matrix.solve_right(
-                        vector_img)
+                    vector_img = sphere_resol_diff.matrix.solve_right(vector_img)
                     list_img_linear_comb = (
-                        sphere_resol_diff.convertDomVectorToLinearComb(
-                            vector_img)
+                        sphere_resol_diff.convertDomVectorToLinearComb(vector_img)
                     )
                     if list_img_linear_comb == -1:
                         continue
@@ -1477,9 +1445,9 @@ class MinimalResolution:
                     list_img_linear_comb = self.sum(list_img_linear_comb)
                 except ValueError as e:
                     vector_img = []
-                # if map_gen_to_lift.generator == AlgebraGenerator(1, 4, 1): # and max_cod_module_index == 12:
-                # DBG(f'found_generator (shift {module_index_shift})', Element(self.A.monomial((0,)), found_generator))
-                # DBG('output',list_img_linear_comb)
+                ########if map_gen_to_lift.generator == AlgebraGenerator(1, 4, 1): # and max_cod_module_index == 12:
+                ########    DBG(f'found_generator (shift {module_index_shift})', Element(self.A.monomial((0,)), found_generator))
+                ########    DBG('output',list_img_linear_comb)
                 # DBG(Element(self.A.monomial((0,)), found_generator))
                 # DBG('output',list_img_linear_comb)
 
@@ -1497,8 +1465,7 @@ class MinimalResolution:
 
             bool_empty_morphism = False
             if len(list_el_gen) == 0:
-                print(
-                    f"[+] Empty morphism ({map_gen_to_lift}), stopping computations.")
+                print(f"[+] Empty morphism ({map_gen_to_lift}), stopping computations.")
                 bool_empty_morphism = True
 
             list_lifted_map.append(
@@ -1516,8 +1483,7 @@ class MinimalResolution:
                 )
             )
 
-            print(
-                f"[+] ({map_gen_to_lift}) lifted (until deg: {module_index_shift}).")
+            print(f"[+] ({map_gen_to_lift}) lifted (until deg: {module_index_shift}).")
 
             if bool_empty_morphism:
                 break
@@ -1560,8 +1526,7 @@ class MinimalResolution:
 
             for generator_i in range(0, len(rearranged_found_generators)):
                 generator_to_lift = rearranged_found_generators[generator_i]
-                element_generator_to_lift = Element(
-                    self.A_unit, generator_to_lift)
+                element_generator_to_lift = Element(self.A_unit, generator_to_lift)
 
                 self.list_lift_processes.append(
                     multiprocessing.Process(
@@ -1578,8 +1543,7 @@ class MinimalResolution:
                     )
                 )
 
-                print(
-                    f"[*] Subprocess associated to generator: {generator_to_lift}")
+                print(f"[*] Subprocess associated to generator: {generator_to_lift}")
 
             t = 0
             k = NUMBER_OF_THREADS
@@ -1593,8 +1557,7 @@ class MinimalResolution:
                     process.join()
                     t += 1
                     print(
-                        f"[*] {len(rearranged_found_generators) -
-                               t} subprocesses remaining."
+                        f"[*] {len(rearranged_found_generators) - t} subprocesses remaining."
                     )
 
                 k += NUMBER_OF_THREADS
@@ -1612,7 +1575,7 @@ class MinimalResolution:
         max_module_index=-1,
         max_deg=sys.maxsize,
     ):
-        # test param ...
+        ## test param ...
         if max_module_index == -1:
             max_module_index = len(self.list_list_found_generators)
 
@@ -1630,19 +1593,18 @@ class MinimalResolution:
                         ):
                             continue  # hardcoded
 
-                        # if not generator_to_lift in [AlgebraGenerator(0, 18, 1), AlgebraGenerator(1, 54, 1), AlgebraGenerator(3, 20, 1)]:
-                        # continue
-                        # if generator_to_lift == AlgebraGenerator(1, 54, 1) and external_generator.deg > 19:
-                        # continue
-                        # if external_generator.module_index > 0:
-                        # if (external_generator.deg - external_generator.module_index) % external_generator.module_index == 0 and external_generator.deg > 4:
-                        # continue ####### fast fix for h_0 powers
+                        #########if not generator_to_lift in [AlgebraGenerator(0, 18, 1), AlgebraGenerator(1, 54, 1), AlgebraGenerator(3, 20, 1)]:
+                        #########    continue
+                        #########if generator_to_lift == AlgebraGenerator(1, 54, 1) and external_generator.deg > 19:
+                        #########    continue
+                        ####if external_generator.module_index > 0:
+                        ####    if (external_generator.deg - external_generator.module_index) % external_generator.module_index == 0 and external_generator.deg > 4:
+                        ####        continue ####### fast fix for h_0 powers
                         # if not external_generator == AlgebraGenerator(2, 9, 1) or not generator_to_lift == AlgebraGenerator(1, 4, 1):
                         #     continue
 
                         print(
-                            f"Computing Yoneda product: {
-                                external_generator} @@ {generator_to_lift}"
+                            f"Computing Yoneda product: {external_generator} @@ {generator_to_lift}"
                         )
 
                         list_lifted_map = self.retrieve_lift_cochain(
@@ -1709,8 +1671,7 @@ class MinimalResolution:
 
                                 log(str(yoneda_product))
 
-                                self.list_yoneda_products.append(
-                                    yoneda_product)
+                                self.list_yoneda_products.append(yoneda_product)
                                 break
 
         print("Yoneda products computed successfully.")
@@ -1749,7 +1710,7 @@ class MinimalResolution:
         return list_output
 
 
-# MODULES
+## MODULES
 
 # RP^\infty (p=2)
 
@@ -1762,14 +1723,12 @@ def callback_coh_rp_infty_generators(A, prime, max_deg):
     for k in range(1, max_deg + 1):
         bool_free_module_generator = False
 
-        # replace with bitwise AND
-        if k in [2**j - 1 for j in range(0, max_deg + 1)]:
+        if k in [2**j - 1 for j in range(0, max_deg + 1)]:  ## replace with bitwise AND
             bool_free_module_generator = True
 
         ev_module_generator = Element(
             HARDCODED_STEENROD_ALG_UNIT,
-            ExtendedAlgebraGenerator(-1, k, 1,
-                                     bool_free_module_generator, f"x^{k}"),
+            ExtendedAlgebraGenerator(-1, k, 1, bool_free_module_generator, f"x^{k}"),
         )
 
         output_list.append(ev_module_generator)
@@ -1784,9 +1743,10 @@ def callback_coh_rp_infty_relations(A, prime, max_deg):
 
     for k in range(1, max_deg + 1):
         for i in range(1, k + 1):  # skip identity relation
+            bool_free_module_generator = False
             if k in [
                 2**j - 1 for j in range(0, max_deg + 1)
-            ]:  # replace with bitwise AND
+            ]:  ## replace with bitwise AND
                 bool_free_module_generator = True
 
             output_list.append(
@@ -1802,8 +1762,7 @@ def callback_coh_rp_infty_relations(A, prime, max_deg):
                         Element(
                             bin_coeff(k, i) * HARDCODED_STEENROD_ALG_UNIT,
                             ExtendedAlgebraGenerator(
-                                -1, k +
-                                i, 1, bool_free_module_generator, f"x^{k+i}"
+                                -1, k + i, 1, bool_free_module_generator, f"x^{k+i}"
                             ),
                         ),
                     ],
@@ -1818,8 +1777,7 @@ def callback_coh_rp_infty_relations(A, prime, max_deg):
 
 def callback_coh_sphere_generators(A, prime, max_deg):
     return [
-        Element(A.monomial((0,)),
-                ExtendedAlgebraGenerator(-1, 0, 1, True, f"x_{0}"))
+        Element(A.monomial((0,)), ExtendedAlgebraGenerator(-1, 0, 1, True, f"x_{0}"))
     ]
 
 
@@ -1903,8 +1861,7 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations(
     def power_coeff(tuple_element_exponents, k):  # P^k
         i, j = tuple_element_exponents
         return sum(
-            [bin_coeff(3 - 2, r) * bin_coeff(j, k - r)
-             for r in range(0, k + 1)]
+            [bin_coeff(3 - 2, r) * bin_coeff(j, k - r) for r in range(0, k + 1)]
         )  # the grading effect is hardcoded
 
     output_list = []
@@ -1919,7 +1876,7 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations(
 
         c_bockstein = bockstein_coeff((i, j))
 
-        # TODO: bool_free_module_generator
+        ## TODO: bool_free_module_generator
         bool_free_module_generator = False
         if int_deg in [4, 12, 36, 108]:
             bool_free_module_generator = True
@@ -2084,8 +2041,7 @@ def callback_coh_p_even_hom_orbit_representation_sphere_rho_d_3_relations(
     def power_coeff(tuple_element_exponents, k):  # P^k
         i, j = tuple_element_exponents
         return sum(
-            [bin_coeff(3 - 2, r) * bin_coeff(j, k - r)
-             for r in range(0, k + 1)]
+            [bin_coeff(3 - 2, r) * bin_coeff(j, k - r) for r in range(0, k + 1)]
         )  # the grading effect is hardcoded
 
     output_list = []
@@ -2100,7 +2056,7 @@ def callback_coh_p_even_hom_orbit_representation_sphere_rho_d_3_relations(
 
         c_bockstein = bockstein_coeff((i, j))
 
-        # TODO: bool_free_module_generator
+        ## TODO: bool_free_module_generator
         bool_free_module_generator = False
         if int_deg in [3, 6, 18, 54]:
             bool_free_module_generator = True
@@ -2193,14 +2149,11 @@ print_banner()
 starting_time = time.time()
 
 str_name_sphere = "Sphere"
-# "S_rho_D_3__p-odd"  # "S_rho_D_3__p-even"
-str_name_module_to_resolve = "Sphere"
+str_name_module_to_resolve = "Sphere"  # "S_rho_D_3__p-odd"  # "S_rho_D_3__p-even"
 # str_name_module_to_resolve = "Sphere"
 
-str_output_file_sphere = f"{FIXED_PRIME_NUMBER}-{str_name_sphere}_{
-    MAX_NUMBER_OF_RELATIVE_DEGREES}_{DEFAULT_YONEDA_PRODUCT_MAX_DEG}"
-str_output_file_module = f"{FIXED_PRIME_NUMBER}-{str_name_module_to_resolve}_{
-    MAX_NUMBER_OF_RELATIVE_DEGREES}_{DEFAULT_YONEDA_PRODUCT_MAX_DEG}"
+str_output_file_sphere = f"{FIXED_PRIME_NUMBER}-{str_name_sphere}_{MAX_NUMBER_OF_RELATIVE_DEGREES}_{DEFAULT_YONEDA_PRODUCT_MAX_DEG}"
+str_output_file_module = f"{FIXED_PRIME_NUMBER}-{str_name_module_to_resolve}_{MAX_NUMBER_OF_RELATIVE_DEGREES}_{DEFAULT_YONEDA_PRODUCT_MAX_DEG}"
 
 # Minimal resolution of the sphere (required to compute Yoneda and Massey products)
 
@@ -2235,21 +2188,21 @@ if not minimalResolution:
         MAX_NUMBER_OF_RELATIVE_DEGREES,
     )
 
-    # coh_sphere_presentation = FPModule(callback_coh_sphere_generators, callback_coh_sphere_relations, 0)
-    # minimalResolution.createModule(coh_sphere_presentation)
+    ####coh_sphere_presentation = FPModule(callback_coh_sphere_generators, callback_coh_sphere_relations, 0)
+    ####minimalResolution.createModule(coh_sphere_presentation)
     # minimalResolution.construct()
 
-    # minimalResolution.lift_test(minimalResolutionSphere)
+    ##minimalResolution.lift_test(minimalResolutionSphere)
     # minimalResolution.compute_yoneda_products(minimalResolutionSphere)
 
     # coh_rp_infty_presentation = FPModule(callback_coh_rp_infty_generators, callback_coh_rp_infty_relations, 20) # Finitely presented module to resolve
-    # coh_sphere_presentation = FPModule(callback_coh_sphere_generators, callback_coh_sphere_relations, 0)
-    # callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
-    # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
-    # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
-    # MAX_NUMBER_OF_RELATIVE_DEGREES
-    # )
-    # minimalResolution.createModule(callback_coh_p_odd_representation_sphere_rho_d_3_presentation) # Finitely presented module to resolve
+    ##coh_sphere_presentation = FPModule(callback_coh_sphere_generators, callback_coh_sphere_relations, 0)
+    ###################callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
+    ###################    callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
+    ###################    callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
+    ###################    MAX_NUMBER_OF_RELATIVE_DEGREES
+    ###################)
+    ###################minimalResolution.createModule(callback_coh_p_odd_representation_sphere_rho_d_3_presentation) # Finitely presented module to resolve
 
     # callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
     #    "Cohomology of the 3-local sphere",  # "Cohomology of representation sphere S^{\\rho}_{D_3} (p: odd)",
@@ -2283,18 +2236,16 @@ if BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE:
 minimalResolution_lifts = load_object(f"{str_output_file_module}__lifts_")
 if not minimalResolution_lifts:
     cbk_filter = (
-        # if (x.module_index, x.deg - x.module_index) == (0, 18) else False
-        lambda x: True
+        lambda x: True  # if (x.module_index, x.deg - x.module_index) == (0, 18) else False
     )
-    def cbk_max_deg(x): return MAX_NUMBER_OF_MODULES - x.deg
+    cbk_max_deg = lambda x: MAX_NUMBER_OF_MODULES - x.deg
     minimalResolution.multiprocess_cochain_lift(
         minimalResolutionSphere, cbk_filter, cbk_max_deg
-    )  # GEN_CALLBACK = lambda x: True
+    )  ## GEN_CALLBACK = lambda x: True
 
     minimalResolution.retrieve_yoneda_products(minimalResolutionSphere)
 
-    dump_object(minimalResolution.list_lifted_maps,
-                f"{str_output_file_module}__lifts_")
+    dump_object(minimalResolution.list_lifted_maps, f"{str_output_file_module}__lifts_")
 
     print("Saved computations.")
 else:
@@ -2383,17 +2334,14 @@ for module_index in range(0, len(minimalResolution.list_list_found_generators)):
                         x=[
                             element_deg
                             - element_module_index
-                            + (element_index - 1) *
-                            UI_SHIFT_MULTIPLE_GENERATORS,
+                            + (element_index - 1) * UI_SHIFT_MULTIPLE_GENERATORS,
                             element_deg
                             - module_index
-                            + (element_index - 1) *
-                            UI_SHIFT_MULTIPLE_GENERATORS
+                            + (element_index - 1) * UI_SHIFT_MULTIPLE_GENERATORS
                             - 1,
                         ],
                         y=[element_module_index, element_module_index + num_page],
-                        name=f"({element_deg - module_index}, {element_module_index}),({
-                            element_deg - module_index - 1}, {element_module_index + num_page})-d_{num_page}",
+                        name=f"({element_deg - module_index}, {element_module_index}),({element_deg - module_index - 1}, {element_module_index + num_page})-d_{num_page}",
                         line=dict(color="red", width=0.8),
                     )
                 )
@@ -2410,8 +2358,7 @@ for module_index in range(0, len(minimalResolution.list_list_found_generators)):
                     bool_key_found = True  # break
 
             if bool_key_found:
-                dict_tuples_yoneda_products[str_diff_key].append(
-                    (x0, x1, y0, y1))
+                dict_tuples_yoneda_products[str_diff_key].append((x0, x1, y0, y1))
             else:
                 dict_tuples_yoneda_products[str_diff_key] = [(x0, x1, y0, y1)]
 
@@ -2477,7 +2424,6 @@ fig.update_xaxes(range=[0, 10])
 fig.update_yaxes(range=[0, 10])
 fig.write_html("./chart.html")
 
-print(
-    f"[+] Process finished. Elapsed time: {time.time() - starting_time} (s).")
+print(f"[+] Process finished. Elapsed time: {time.time() - starting_time} (s).")
 
 fig.show()
