@@ -7,9 +7,10 @@
 
 import _pickle as cPickle
 import os
-import sys  # ~unused: sys.maxsize, sys.exit (tests)
+import sys  # ~unused, sys.maxsize
 
 import time
+import gc  # ~unused
 
 # from sage.all import * # WARNING (BAD PERFORMANCE)
 from sage.rings.finite_rings.finite_field_constructor import (
@@ -21,13 +22,13 @@ from sage.algebras.steenrod.steenrod_algebra import (
     SteenrodAlgebra,
 )  # WARNING (BAD PERFORMANCE)
 
-import multiprocessing
-
-from functools import cache
-
 import plotly.graph_objects as go
 
 import jsons
+
+import multiprocessing
+
+from functools import cache
 
 # Global parameters
 
@@ -404,13 +405,13 @@ class Morphism:
     def eval_vector(self, list_vector):
         return self.matrix * Matrix(GF(self.fixed_prime), list_vector, sparse=True)
 
-    # def eval_linear_comb(self, list_list_linear_comb): # DEPRECATED
-    #     element_as_vector = self.convertElementToVector(
-    #         [list_list_linear_comb], self.list_dom_basis
-    #     )
-    #     return self.matrix * Matrix(
-    #         GF(self.fixed_prime), element_as_vector, sparse=True
-    #     )
+    def eval_linear_comb(self, list_list_linear_comb):
+        element_as_vector = self.convertElementToVector(
+            [list_list_linear_comb], self.list_dom_basis
+        )
+        return self.matrix * Matrix(
+            GF(self.fixed_prime), element_as_vector, sparse=True
+        )
 
     def convertLinearCombToVector(self, list_list_linear_comb, list_basis):
         return self.getListListMatrix([0], list_basis, list_list_linear_comb)[0]
@@ -434,7 +435,7 @@ class Morphism:
 
     def OLDgetListListMatrix(
         self, list_dom_basis, list_cod_basis, list_list_images
-    ):  # TODO: deprecated method: remove
+    ):  # TODO: remove
         dim_cod = len(list_cod_basis)
         dim_dom = len(list_dom_basis)  # = len(list_list_images)
 
@@ -1783,7 +1784,6 @@ def callback_coh_rp_infty_relations(A, prime, max_deg):
 
     for k in range(1, max_deg + 1):
         for i in range(1, k + 1):  # skip identity relation
-            bool_free_module_generator = False
             if k in [
                 2**j - 1 for j in range(0, max_deg + 1)
             ]:  # replace with bitwise AND
@@ -2184,9 +2184,9 @@ def callback_coh_p_even_hom_orbit_representation_sphere_rho_d_3_relations(
     return output_list
 
 
-###############################################################################
-#                                  SET UP                                     #
-###############################################################################
+##################################################################################
+##                                  SET UP                                      ##
+##################################################################################
 
 print_banner()
 
@@ -2275,7 +2275,7 @@ if not minimalResolution:
     dump_object(minimalResolution, f"{str_output_file_module}__additive__")
 
 if BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE:
-    print("[+] BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE: True. Exiting.")
+    print(f"[+] BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE: True. Exiting.")
     sys.exit()
 
 # Chain map lifts
@@ -2302,9 +2302,9 @@ else:
 
     minimalResolution.retrieve_yoneda_products(minimalResolutionSphere)
 
-###############################################################################
-#                                     DRAW                                    #
-###############################################################################
+##################################################################################
+##                                    DRAW                                      ##
+##################################################################################
 
 
 def check_drawable_segment(
@@ -2450,7 +2450,27 @@ fig.update_layout(
     template="plotly_dark",
     legend_traceorder="reversed",
     xaxis=dict(autorange=True, fixedrange=False),
-    yaxis=dict(autorange=True, fixedrange=False)
+    yaxis=dict(autorange=True, fixedrange=False),
+    # updatemenus=[
+    #    dict(
+    #     type='buttons',
+    #     buttons=list([
+    #        dict(label = 'Show cluster 1',
+    #             method = 'update',
+    #             args = [{'visible': [True, False]},
+    #                     {'title': 'cluster 1'}]),
+    #
+    #        dict(label = 'Show cluster 2',
+    #             method = 'update',
+    #             args = [{'visible': [False, True]},
+    #                     {'title': 'cluster 2'}]),
+    #
+    #        dict(label = 'Show both clusters',
+    #             method = 'update',
+    #             args = [{'visible': [True, True]},
+    #                     {'title': 'both'}])
+    #    ]),
+    # )]
 )
 
 fig.update_xaxes(range=[0, 10])
