@@ -2388,7 +2388,7 @@ fig.add_trace(
         x=group_x,
         y=group_y,
         mode="markers",
-        name="Copy of F_3",
+        name=f"Copy of F_{FIXED_PRIME_NUMBER}",
         marker=dict(size=5, color="#0F0"),
     )
 )
