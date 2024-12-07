@@ -22,7 +22,7 @@ Note that we are not only interested in these `Ext groups` and the associated ``
 
 # Usage (non-Linux users)
 
-Alternatively, you can run this program on ``Google Colab``. Create a new Notebook and just run the content of ``./colab/i.sh`` on a cell. You will also need to hardcode a finitely presented module and then call ``minimalResolution.createModule()``.
+Alternatively, you can run this program on ``Google Colab``. Create a new Notebook and just run the content of ``./colab/i.sh``. This will install everything for you. You will also need to hardcode a finitely presented module and then call ``minimalResolution.createModule()``.
 
 # Parameters
 
