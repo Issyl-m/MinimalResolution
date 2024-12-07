@@ -50,6 +50,7 @@ Alternatively, you can run this program on [Google Colab](https://colab.google/)
 # Output example
 
 The following diagrams illustrate the $E_2-$term associated with the sphere spectrum at $p = 2$ computed using this program.
+The first diagram is usually quite saturated. To solve this, you have two possibilities: specify the Yoneda products of interest via the `cbk_filter()` method, or double-click on the `Copy of F_p` label and choose the products of interest.
 
 ![Output files](./img/output-sample-1.png)
 ![Output files](./img/output-sample-2.png)
