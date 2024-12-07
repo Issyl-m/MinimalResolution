@@ -47,3 +47,9 @@ Alternatively, you can run this program on [Google Colab](https://colab.google/)
 * ``NUMBER_OF_THREADS``
   - This parameter indicates the number of parallel processes that will be used to compute cochain lifts.
 
+# Output example
+
+The following diagrams illustrate the $E_2-$term associated with the sphere spectrum at $p = 2$ computed using this program.
+
+![Output files](./img/output-sample-1.png)
+![Output files](./img/output-sample-2.png)
