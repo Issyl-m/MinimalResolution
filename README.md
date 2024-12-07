@@ -1,6 +1,6 @@
 # MinimalResolution [proof-of-concept]
 
-Proof-of-concept of computing minimal resolutions over the mod $p$ Steenrod algebra developed by me. This program constructs a free resolution of a finitely presented $`\mathbb{F}_p-`$module as an $\mathcal{A}_p-$module. It also computes chain map lifts of cohomology classes to compute Yoneda products.
+Proof-of-concept of computing minimal resolutions over the mod $p$ Steenrod algebra developed by me. This program constructs a free resolution of a finitely presented $\mathbb{F}_p-$module as an $\mathcal{A}_p-$module. It also computes chain map lifts of cohomology classes to compute Yoneda products.
 
 # Requirements 
 
@@ -16,7 +16,7 @@ This software should be executed on ``GNU/Linux`` distributions.
 1. Provide a finitely presented $\mathbb{F}_p-$module by using the ``minimalResolution.createModule()`` method. The source code provides some examples.
 2. Execute `g.sh` (or ``python -W ignore minrv1.py``).
 
-You will get a plot resembling the computed `Ext groups`, and the corresponding $`E_2-`$term with its Yoneda products will be saved in ``./log.txt`` for further inspection. The program also dumps the computed lifts and the minimal resolution into ``./*.obj`` files.
+You will get a plot resembling the computed `Ext groups`, and the corresponding $E_2-$term with its Yoneda products will be saved in ``./log.txt`` for further inspection. The program also dumps the computed lifts and the minimal resolution into ``./*.obj`` files.
 
 Note that we are not only interested in these `Ext groups` and the associated ``Yoneda products``. The program also stores a backup of the objects created by the software, including chain lift information.
 
