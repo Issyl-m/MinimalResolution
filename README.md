@@ -31,7 +31,7 @@ Alternatively, you can run this program on ``Google Colab``. Just copy and paste
 
 * ``FIXED_PRIME_NUMBER`` 
   - This is the associated prime number used during the execution.
-  - You must provide a prime number compatible with the finitely presented $\mathbb{F}_p-$module to consider.
+  - You must provide a prime number compatible with the finitely presented $`\mathbb{F}_p-`$module to consider.
 
 * ``MAX_NUMBER_OF_RELATIVE_DEGREES`` 
   - This parameter accounts for the maximum relative (topological) degree to compute.
