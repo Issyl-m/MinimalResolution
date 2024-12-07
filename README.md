@@ -18,11 +18,11 @@ This software should be executed on ``GNU/Linux`` distributions.
 
 You will get a plot resembling the computed `Ext groups` (``chart.html``), and the corresponding $E_2-$term with its Yoneda products will be saved in ``./log.txt`` for further inspection. The program also dumps the computed lifts and the minimal resolution into ``./*.obj`` files.
 
-![Output files](./img/download-files.jpg)
-
 # Usage (non-Linux users)
 
 Alternatively, you can run this program on [Google Colab](https://colab.google/). Create a new Notebook and just run the content of ``./colab/i.sh``. This will install everything for you. You will also need to hardcode a finitely presented module and then call ``minimalResolution.createModule()``.
+
+![Output files](./img/download-files.jpg)
 
 ``WARNING``: the software is prone to high memory consumption since it relies on SageMath's mod $p$ linear algebra routines. This could lead to crashes or unexpected behavior. Beware of not reaching the maximum amount of RAM available on your device. Smaller primes tend to consume more memory. Ensure that you have at least 16 GB of RAM. 
 
