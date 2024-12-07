@@ -20,7 +20,7 @@ You will get a plot resembling the computed `Ext groups` (``chart.html``), and t
 
 # Usage (non-Linux users)
 
-Alternatively, you can run this program on [Google Colab](https://colab.google/). Create a new Notebook and just run the content of ``./colab/i.sh``. This will install everything for you. You will also need to hardcode a finitely presented module and then call ``minimalResolution.createModule()``.
+Alternatively, you can run this program on [Google Colab](https://colab.google/). Create a new Notebook and just run the content of ``./colab/i.sh``. This will install everything for you. You will also need to hardcode a finitely presented module and then call ``minimalResolution.createModule()`` before running `g.sh`.
 
 ![Output files](./img/download-files.jpg)
 
