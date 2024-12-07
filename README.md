@@ -39,4 +39,6 @@ Alternatively, you can run this program on ``Google Colab``. Just copy and paste
 * ``MAX_NUMBER_OF_MODULES`` 
   - Accounts for the maximum $\mathcal{A}_p-$modules to compute in the minimal resolution.
 
-* ``NUMBER_OF_THREAS``
+* ``NUMBER_OF_THREADS``
+  - This parameter indicates the number of parallel processes that will be used to compute cochain lifts.
+
