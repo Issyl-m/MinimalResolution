@@ -2397,27 +2397,7 @@ fig.update_layout(
     template="plotly_dark",
     legend_traceorder="reversed",
     xaxis=dict(autorange=True, fixedrange=False),
-    yaxis=dict(autorange=True, fixedrange=False),
-    # updatemenus=[
-    #    dict(
-    #     type='buttons',
-    #     buttons=list([
-    #        dict(label = 'Show cluster 1',
-    #             method = 'update',
-    #             args = [{'visible': [True, False]},
-    #                     {'title': 'cluster 1'}]),
-    #
-    #        dict(label = 'Show cluster 2',
-    #             method = 'update',
-    #             args = [{'visible': [False, True]},
-    #                     {'title': 'cluster 2'}]),
-    #
-    #        dict(label = 'Show both clusters',
-    #             method = 'update',
-    #             args = [{'visible': [True, True]},
-    #                     {'title': 'both'}])
-    #    ]),
-    # )]
+    yaxis=dict(autorange=True, fixedrange=False) 
 )
 
 fig.update_xaxes(range=[0, 10])
