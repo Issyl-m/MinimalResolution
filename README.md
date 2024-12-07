@@ -24,6 +24,8 @@ Note that we are not only interested in these `Ext groups` and the associated ``
 
 Alternatively, you can run this program on [Google Colab](https://colab.google/). Create a new Notebook and just run the content of ``./colab/i.sh``. This will install everything for you. You will also need to hardcode a finitely presented module and then call ``minimalResolution.createModule()``.
 
+``WARNING``: the software is prone to high memory consumption since it relies on SageMath's mod $p$ linear algebra routines. This could lead to crashes or unexpected behavior. Beware of not reaching the maximum amount of RAM available on your device. Smaller primes tend to consume more memory. Ensure that you have at least 16 GB of RAM. 
+
 # Parameters
 
 * ``BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE`` 
@@ -35,9 +37,12 @@ Alternatively, you can run this program on [Google Colab](https://colab.google/)
 
 * ``MAX_NUMBER_OF_RELATIVE_DEGREES`` 
   - This parameter accounts for the maximum relative (topological) degree to compute.
+  - If you have 16 GB of RAM, this value should not exceed 60 for $p = 2$. It could reach approximately 130 for $p = 3$.
+  - These values were obtained heuristically.
 
 * ``MAX_NUMBER_OF_MODULES`` 
   - Accounts for the maximum $\mathcal{A}_p-$modules to compute in the minimal resolution.
+  - It is set equal to `MAX_NUMBER_OF_RELATIVE_DEGREES` by default.
 
 * ``NUMBER_OF_THREADS``
   - This parameter indicates the number of parallel processes that will be used to compute cochain lifts.
