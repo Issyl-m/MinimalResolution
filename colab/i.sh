@@ -2,7 +2,7 @@
 !pip install -q condacolab
 import condacolab
 condacolab.install()
-!mamba create -n min_resolution sage plotly python=3.12.7 -c conda-forge -q
+!mamba create -n min_resolution sage plotly python=3.12.5 -c conda-forge -q
 !git clone https://github.com/Issyl-m/MinimalResolution.git # && cd MinimalResolution
 
 # run this block on a separate cell
@@ -10,6 +10,5 @@ condacolab.install()
 eval "$(conda shell.bash hook)" # copy conda command to shell
 conda activate min_resolution
 pip install jsons
-
-# run this block on a separate cell
-!cd MinimalResolution && ./g.sh
+cd MinimalResolution
+./g.sh
