@@ -3,7 +3,7 @@
 # Licensed under the terms of the MIT License (see ./LICENSE).
 
 # TODO: improve notation
-# TODO: remove SageMath dependencies
+# TODO: improve performance: remove SageMath dependencies
 
 import _pickle as cPickle
 import os
@@ -39,7 +39,7 @@ MAX_NUMBER_OF_RELATIVE_DEGREES = 30  # 100  ## 130
 MAX_NUMBER_OF_MODULES = MAX_NUMBER_OF_RELATIVE_DEGREES
 
 NUMBER_OF_THREADS = 5  # 40  # 100
-DEFAULT_YONEDA_PRODUCT_MAX_DEG = 20  # DEPRECATED
+DEFAULT_YONEDA_PRODUCT_MAX_DEG = 20  # DEPRECATED. TODO: remove from src
 
 UI_SHIFT_MULTIPLE_GENERATORS = 0.1
 
@@ -381,7 +381,7 @@ class Morphism:
         list_list_images,
         tuple_dom=(-1, -1),
         tuple_cod=(-1, -1),
-    ):  # TODO: diff. coord.
+    ):
         self.list_dom_basis = self.sanitizeRedundant(list_dom_basis)
         self.list_cod_basis = self.sanitizeRedundant(list_cod_basis)
         self.list_list_images = list_list_images
@@ -404,7 +404,7 @@ class Morphism:
     def eval_vector(self, list_vector):
         return self.matrix * Matrix(GF(self.fixed_prime), list_vector, sparse=True)
 
-    def eval_linear_comb(self, list_list_linear_comb):
+    def eval_linear_comb(self, list_list_linear_comb):  # TODO:unimplemented
         element_as_vector = self.convertElementToVector(
             [list_list_linear_comb], self.list_dom_basis
         )
@@ -431,57 +431,6 @@ class Morphism:
         return [
             element for element in list_basis if not element.cohomology_operation == 0
         ]
-
-    def OLDgetListListMatrix(
-        self, list_dom_basis, list_cod_basis, list_list_images
-    ):  # TODO: remove
-        dim_cod = len(list_cod_basis)
-        dim_dom = len(list_dom_basis)  # = len(list_list_images)
-
-        list_list_matrix = [[0] * max(1, dim_dom)
-                            for k in range(0, max(1, dim_cod))]
-
-        for i in range(0, dim_dom):
-            for j in range(0, dim_cod):
-                for k in range(0, len(list_list_images[i])):
-                    for monomial_index in range(
-                        0, len(list_list_images[i]
-                               [k].cohomology_operation.terms())
-                    ):
-                        monomial = list_list_images[i][k].cohomology_operation.terms()[
-                            monomial_index
-                        ]
-                        monomial_coefficient = monomial.leading_coefficient()
-
-                        if (
-                            list_list_images[i][k].generator
-                            == list_cod_basis[j].generator
-                        ):
-                            bool_monomial_patch = False  # TODO: warning...
-                            if (
-                                monomial.leading_monomial().trailing_support()
-                                in [tuple([]), (0,)]
-                                and list_cod_basis[j]
-                                .cohomology_operation.leading_monomial()
-                                .trailing_support()
-                                in [tuple([]), (0,)]
-                            ):
-                                bool_monomial_patch = True
-                            if (
-                                monomial.leading_monomial()
-                                == list_cod_basis[
-                                    j
-                                ].cohomology_operation.leading_monomial()
-                                or bool_monomial_patch
-                            ):
-                                list_list_matrix[j][i] += (
-                                    monomial_coefficient
-                                    / list_cod_basis[
-                                        j
-                                    ].cohomology_operation.leading_coefficient()
-                                )  # 1, ..., p-1
-
-        return list_list_matrix
 
     def getListListMatrix(self, list_dom_basis, list_cod_basis, list_list_images):
         dim_cod = len(list_cod_basis)
@@ -526,7 +475,7 @@ class Morphism:
                             list_list_images[i][k].generator
                             == list_cod_basis[j].generator
                         ):
-                            bool_monomial_patch = False  # TODO: warning...
+                            bool_monomial_patch = False
                             if monomial_support in [
                                 tuple([]),
                                 (0,),
@@ -540,13 +489,11 @@ class Morphism:
                                     monomial_coefficient / cod_basis_leading_coeff
                                 )  # 1, ..., p-1
 
-        # DBG(self.OLDgetListListMatrix(list_dom_basis, list_cod_basis, list_list_images) == list_list_matrix)
-
         return list_list_matrix
 
     def convertKernelBasisToListOfVectors(
         self, sage_matrix_kernel_basis
-    ):  # TODO: suspicious
+    ):  # TODO: possible bottleneck (SageMath routines...)
         list_kernel_generators = []
 
         if len(self.list_dom_basis) > 0:
@@ -683,7 +630,7 @@ class MinimalResolution:
             f"Table of relations ({self.str_name}) [JSON]", "=", False)
 
         if len(self.list_module_to_resolve_relations) == 0:
-            print(f"(There are no extra relations)")
+            print("(There are no extra relations)")
             print()
 
         for relation in self.list_module_to_resolve_relations:
@@ -740,37 +687,17 @@ class MinimalResolution:
             element_r = []  # zero output value when there aren't more relations
 
             # A = SteenrodAlgebra(p=3, basis='adem')
-            # (A.P(9)*A.P(1)*A.Q(0)).support() # se lee de derecha a izquierda: partir en 0 = potencia. partir en 1 = bockstein.
-
-            # TODO: cambiar if/else. cambiar self.A.P
+            # (A.P(9)*A.P(1)*A.Q(0)).support() # right-to-left: 0 = Power. 1 = Bockstein.
             # A.monomial( (A.Q(0)*A.P(1)*A.Q(0)).leading_support())
 
             trailing_support = element.cohomology_operation.trailing_support()
             coh_operation_coeff = (
                 element.cohomology_operation.trailing_coefficient()
-            )  # TODO: IMPLEMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            )
 
             list_splitted_support = self.split_support(trailing_support)
             support_prefix = list_splitted_support[0]
             support_coh_operation = list_splitted_support[1]
-
-            # print('------------------------')
-            # print(element.cohomology_operation)
-            # print((support_prefix))
-            # print((support_coh_operation))
-            # print(self.A.monomial(support_prefix))
-            # print(self.A.monomial(support_coh_operation))
-            # print('------------------------')
-            # print('------------------------')
-            # print(f"cohomology operation: {element.cohomology_operation}")
-            # print(f"coh_operation_coeff: {coh_operation_coeff}")
-            # print(self.A.monomial((0,)))
-            # print(self.A.monomial((0,)).trailing_support())
-            # print(f"support: {trailing_support}")
-            # print(f"support prefix: {support_prefix}")
-            # print(f"trailing support: {trailing_support}")
-            # print(f"len trailing support: {len(trailing_support)}")
-            # print('------------------------')
 
             coh_operation = self.A.monomial(support_coh_operation)
 
@@ -779,8 +706,6 @@ class MinimalResolution:
                 and len(trailing_support) > 0
                 and not support_coh_operation == (0,)
             ):  # and len(trailing_support) > 0
-                # print(f"omg: {support_coh_operation}")
-                # print(element.cohomology_operation)
 
                 for relation in self.list_module_to_resolve_relations:
                     if (
@@ -798,13 +723,9 @@ class MinimalResolution:
                         for element in self.sum(element_r)
                     ]
                 )
-                # print(r)
-                # if not coh_operation_coeff == self.A.monomial((0,)):
-                #    print(coh_operation_coeff)
-                #    print(element)
-                #    sys.exit()
+
             elif not support_prefix == (0,):
-                # print(f"evil: {trailing_support}")
+
                 coh_operation_prefix = coh_operation_coeff * self.A.monomial(
                     support_prefix
                 )
@@ -831,9 +752,7 @@ class MinimalResolution:
 
                 r += element_r
             else:
-                # print(f"UNREACHED? {element}")
-                # print(trailing_support)
-                # print(s elf.A.monomial(trailing_support))
+
                 r.append([element])
 
         return r
@@ -877,7 +796,7 @@ class MinimalResolution:
 
         trivial_element = Element(
             self.A_unit, AlgebraGenerator(-2, 0, 0)
-        )  # fix/change
+        )  # change degree convention
 
         for element_1 in list_elements:
             element_added_partially = trivial_element
@@ -895,7 +814,7 @@ class MinimalResolution:
 
                 list_elements_last_checked_generator = element_1.generator
                 if element_added_partially == trivial_element:
-                    element_added_partially = first_sum_element
+                    element_added_partially = first_sum_element  # not unbound
                 else:
                     if element_added_partially.generator == element_2.generator:
                         element_added_partially += element_2
@@ -909,7 +828,7 @@ class MinimalResolution:
 
         return list_elements_arranged
 
-    def eval(self, module_basis_element):  # this methods depends on the mapping table
+    def eval(self, module_basis_element):  # this method depends on the mapping table
         list_img_elements = []
 
         for list_mapping_table in self.list_list_mapping_table:
@@ -927,12 +846,12 @@ class MinimalResolution:
 
         return self.sum(
             list_img_elements
-            # move # [element_img for element_img in self.sum(list_img_elements) if not element_img.cohomology_operation == 0]
+
         )
 
     def raw_eval(
         self, module_basis_element
-    ):  # this methods depends on the mapping table
+    ):  # this method depends on the mapping table
         list_img_elements = []
 
         for list_mapping_table in self.list_list_mapping_table:
@@ -940,9 +859,7 @@ class MinimalResolution:
                 if mt_entry.src == module_basis_element:
                     list_img_elements += mt_entry.list_dst
 
-        # DBG('img test:', self.sum(list_img_elements))
-
-        return self.sum(list_img_elements)  # move
+        return self.sum(list_img_elements)  # move src
 
     def diff(self, resolution_module_subindex, module_relative_deg):
         if resolution_module_subindex > 0:
@@ -956,14 +873,13 @@ class MinimalResolution:
                 resolution_module_subindex - 1, module_relative_deg + 1
             )
         else:
-            # list_list_images = [self.raw_eval(element) for element in self.getElementsByRelativeDeg(resolution_module_subindex, module_relative_deg)]
             list_raw_eval_images = [
                 self.eval(element)
                 for element in self.getElementsByRelativeDeg(
                     resolution_module_subindex, module_relative_deg
                 )
             ]
-            # print([element for element in self.getElementsByRelativeDeg(resolution_module_subindex, module_relative_deg)])
+
             list_list_list_images = [
                 self.non_free_eval(raw_eval_image)
                 for raw_eval_image in list_raw_eval_images
@@ -980,24 +896,14 @@ class MinimalResolution:
                 )
                 list_list_images.append(list_rearranged_sum)
 
-            # print(list_raw_eval_images)
-            # print(list_list_images)
             list_cod_basis = self.getElementsByRelativeDeg(
                 resolution_module_subindex - 1, module_relative_deg
-            )  # this degree is absolute
+            )  # absolute degree
 
         list_dom_basis = self.getElementsByRelativeDeg(
             resolution_module_subindex, module_relative_deg
         )
-        # list_cod_basis = self.getElementsByRelativeDeg(resolution_module_subindex-1, module_relative_deg+1)
-        # print('-----------------------------------start')
-        # print(f"dom_basis: {list_dom_basis}")
-        # print(f"cod_basis: {list_cod_basis}")
-        # print(f"list_list_images: {list_list_images}")
-        # print(self.getElementsByRelativeDeg(resolution_module_subindex, module_relative_deg))
-        # print([Element(self.A.monomial((0,)), ExtendedAlgebraGenerator(-1, 1, 1, True, f"x^{1}"))])
-        # r = self.non_free_eval([Element(self.A.monomial((0,)), ExtendedAlgebraGenerator(-1, 1, 1, True, f"x^{1}"))])
-        # print('----------------------------end')
+
         d = Morphism(
             self.fixed_prime,
             list_dom_basis,
@@ -1007,13 +913,11 @@ class MinimalResolution:
             tuple_cod=(
                 resolution_module_subindex - 1,
                 module_relative_deg + 1,
-            ),  # TODO: fix first column
+            ),  # TODO: fix column notation
         )
         self.list_differentials.append(d)
         list_d_kernel = d.getKernelAsVect()
 
-        # DBG(list_d_kernel[0][0].cohomology_operation.trailing_support())
-        # sys.exit()
         dim_d_kernel = len(list_d_kernel)
 
         if dim_d_kernel > 0 and len(list_dom_basis) > 0:
@@ -1045,7 +949,6 @@ class MinimalResolution:
                     self.eval(element) for element in list_dom_higher_deg
                 ]
 
-                # DBG('@@hdom:', list_dom_higher_deg, '@@hcod:', list_dom_basis, '@@himg:', list_list_images_higher_deg)
                 d_higher_degree = Morphism(
                     self.fixed_prime,
                     list_dom_higher_deg,
@@ -1057,27 +960,6 @@ class MinimalResolution:
                                module_relative_deg),
                 )
 
-                # if resolution_module_subindex == 0 and module_relative_deg >= 6:
-                #    print("#################")
-                #    DBG('MATRIX KERNEL', list_d_kernel)
-                #    #DBG('HIGHER MATRIX IMAGE', d_higher_degree.matrix.image().basis())
-                #    #DBG('HIGHER DEG IMAGES: ', list_list_images_higher_deg, 'HIGHER DEG DOM: ', list_dom_higher_deg, 'HIGHER DEG COD: ', list_dom_basis)
-                #    DBG('MATRIX', d.matrix)
-                #    DBG('HIGHER MATRIX', d_higher_degree.matrix)
-                #    DBG('MATRIX KERNEL', d.matrix.right_kernel())
-                #    #DBG('MATRIX KERNEL', d.matrix.right_kernel().basis())
-                #    DBG('HIGHER MATRIX IMAGE', d_higher_degree.matrix.column_space())
-                #    DBG('HIGHER DEG IMAGES: ', list_list_images_higher_deg, 'HIGHER DEG DOM: ', list_dom_higher_deg, 'HIGHER DEG COD: ', list_dom_basis)
-                #    DBG('MATRIX IMAGES: ', list_list_images, 'MATRIX DOM: ', list_dom_basis, 'MATRIX COD: ', list_cod_basis)
-                #    print('#'*100)
-                #    print('#'*100)
-                #    print('#'*100)
-                #    print("TODO: checkear imagenes, armar matrices, contrastar ker...")
-                #    print('#'*100)
-                #    print('#'*100)
-                #    print('#'*100)
-                #    #printl(self.list_list_mapping_table)
-
                 if d_higher_degree.matrix.column_space().dimension() > 0:
                     quot_ker_img = d.matrix.right_kernel().quotient(
                         d_higher_degree.matrix.column_space()
@@ -1085,9 +967,6 @@ class MinimalResolution:
                 else:
                     quot_ker_img = d.matrix.right_kernel()
 
-                list_quot_ker_img_orig = list(
-                    [item for item in quot_ker_img.basis() if not item == 0]
-                )
                 list_quot_ker_img = list(
                     [
                         quot_ker_img.lift(item)
@@ -1101,16 +980,6 @@ class MinimalResolution:
                     list_quot_ker_img
                 )
 
-                # DBG('QUOTIENT: ', quot_ker_img.basis())
-
-                # DBG(d.matrix)
-                # DBG(list_d_kernel)
-
-                # DBG('img:', list_list_images)
-                # DBG('basis:', list_dom_basis)
-                # DBG('cod_basis:', list_cod_basis)
-                # print('#'*100)
-
             for i in range(0, dim_quot_ker_img):
                 element_new_generator = Element(
                     self.A_unit,
@@ -1121,23 +990,6 @@ class MinimalResolution:
                     ),
                 )
 
-                # if element_new_generator.generator == AlgebraGenerator(2, 4, 1):
-                #    DBG('!!!!!!!!!!!!', element_new_generator)
-                #    DBG(list_quot_ker_img)
-                #    DBG(list_d_kernel)
-                #    DBG('##########', list(span(d.matrix.right_kernel().basis(), GF(self.fixed_prime)).quotient(d_higher_degree.matrix.column_space())))
-                #    DBG('########## higher col space', list(d_higher_degree.matrix.column_space()))
-                #    DBG('########## kernel', list(d.matrix.right_kernel()))
-                #    print("################# MAPPING INCORRECTO DE SQ^1 2,4,1")
-                #    DBG('MATRIX', d.matrix)
-                #    DBG('HIGHER MATRIX', d_higher_degree.matrix)
-                #    DBG('MATRIX KERNEL', d.matrix.right_kernel().basis())
-                #    DBG('HIGHER MATRIX IMAGE', d_higher_degree.matrix.column_space().basis())
-                #    DBG('HIGHER MATRIX KERNEL', d_higher_degree.matrix.right_kernel().basis())
-                #    DBG('HIGHER DEG IMAGES: ', list_list_images_higher_deg, 'HIGHER DEG DOM: ', list_dom_higher_deg, 'HIGHER DEG COD: ', list_dom_basis)
-                #    printl(self.list_list_mapping_table)
-                #    sys.exit()
-
                 self.list_list_mapping_table[resolution_module_subindex + 1].append(
                     MTEntry(element_new_generator,
                             self.sum(list_quot_ker_img[i]))
@@ -1147,21 +999,12 @@ class MinimalResolution:
                     element_new_generator.generator
                 )
 
-                # print(f"[+] New generator: [{element_new_generator}] @ F_{"{"+f"{resolution_module_subindex+1}"+"}"} (dim ker: {dim_quot_ker_img}, deg: {module_relative_deg + resolution_module_subindex}).")
-                # printl(self.list_list_mapping_table)
-
-                # if dim_quot_ker_img > 1:
-                #    print(list_quot_ker_img)
-                #    print('-------')
-                #    print(list_quot_ker_img_orig)
-
         self.differential = GradedMorphism(self.list_differentials)
         return
 
     def construct(self):
         for resolution_module_subindex in range(0, MAX_NUMBER_OF_MODULES):
             print("#" * 120)
-            # print(f"[*] Current module: F_{"{"+f"{resolution_module_subindex}"+"}"}. Constructing F_{"{"+f"{resolution_module_subindex+1}"+"}"}.")
 
             for module_relative_deg in range(
                 0, MAX_NUMBER_OF_RELATIVE_DEGREES - resolution_module_subindex
@@ -1205,7 +1048,7 @@ class MinimalResolution:
 
         for module_index in range(0, len(self.list_list_expanded_minimal_resolution)):
             print("#" * 120)
-            # print(f"[*] Generators of F_{"{"+f"{module_index}"+"}"}:")
+
             print("#" * 120)
             for relative_deg in range(
                 0, len(
@@ -1253,8 +1096,6 @@ class MinimalResolution:
                     }
                 )
 
-                # for k in self.list_list_expanded_minimal_resolution[module_index][relative_deg]: print(type(k))
-
             list_list_min_res.append(list_list_module)
 
         return jsons.dumps(list_list_min_res, indent=4)
@@ -1286,10 +1127,9 @@ class MinimalResolution:
         callback_get_codomain,
         dom_module_index,
         cod_module_index,
-    ):  # TODO: BUG: varias relaciones
+    ):  # TODO: possible BUG when parsing several relations
         list_morphism = []
-        # DBG('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', fp_map.list_tuple_domain[0], fp_map.list_tuple_codomain[0])
-        # DBG(fp_map) ######### fix zero map
+
         if len(fp_map.list_tuple_domain) == 0:
             dom_rel_deg = 0
             cod_rel_deg = 0
@@ -1337,7 +1177,6 @@ class MinimalResolution:
                     tuple_cod=(cod_module_index, cod_rel_deg + i),
                 )
             )
-        # DBG(GradedMorphism(list_morphism))
 
         return GradedMorphism(list_morphism)
 
@@ -1376,17 +1215,7 @@ class MinimalResolution:
         list_index,
         mgr_lock,
     ):
-        # if (  # TODO: cheap "optimization", remove
-        #    map_gen_to_lift.generator.module_index == map_gen_to_lift.generator.deg
-        #    and map_gen_to_lift.generator.deg > 1
-        # ):
-        #    list_list_output[list_index] = [
-        #        [external_resolution, map_gen_to_lift, max_cod_module_index, 0]
-        #    ]
-        #    return
-
         dom_module_index = map_gen_to_lift.generator.module_index
-        cod_module_index = 0
 
         first_generator_sphr = external_resolution.list_list_found_generators[0][0]
 
@@ -1476,11 +1305,6 @@ class MinimalResolution:
                     list_img_linear_comb = self.sum(list_img_linear_comb)
                 except ValueError as e:
                     vector_img = []
-                # if map_gen_to_lift.generator == AlgebraGenerator(1, 4, 1): # and max_cod_module_index == 12:
-                # DBG(f'found_generator (shift {module_index_shift})', Element(self.A.monomial((0,)), found_generator))
-                # DBG('output',list_img_linear_comb)
-                # DBG(Element(self.A.monomial((0,)), found_generator))
-                # DBG('output',list_img_linear_comb)
 
                 list_el_gen.append(Element(self.A_unit, found_generator))
                 list_list_el_dst.append(list_img_linear_comb)
@@ -1521,23 +1345,11 @@ class MinimalResolution:
             if bool_empty_morphism:
                 break
 
-        # if map_gen_to_lift.generator == AlgebraGenerator(1,4,1):
-        #    for i in range(0, len(list_lifted_map[1].list_morphisms)):
-        #        print(list_lifted_map[1].list_morphisms[i])
-        #        print(list_lifted_map[1].list_morphisms[i].list_dom_basis)
-        #        print(list_lifted_map[1].list_morphisms[i].list_list_images)
-        #        ## list_lifted_map[1].list_morphisms[i].list_list_images corresponds to the Yoneda product
-        # DBG(list_lifted_map)
-
         with mgr_lock:
             list_list_output[list_index] = [
                 [0, map_gen_to_lift, max_cod_module_index, list_lifted_map]
             ]  # The first entry should be some sort of hash
-            # [[external_resolution, map_gen_to_lift, max_cod_module_index, list_lifted_map]]
 
-        # DBG(list_list_output)
-
-        # return list_lifted_map
         return
 
     def multiprocess_cochain_lift(
@@ -1611,7 +1423,6 @@ class MinimalResolution:
         max_module_index=-1,
         max_deg=sys.maxsize,
     ):
-        # test param ...
         if max_module_index == -1:
             max_module_index = len(self.list_list_found_generators)
 
@@ -1629,16 +1440,6 @@ class MinimalResolution:
                         ):
                             continue  # hardcoded
 
-                        # if not generator_to_lift in [AlgebraGenerator(0, 18, 1), AlgebraGenerator(1, 54, 1), AlgebraGenerator(3, 20, 1)]:
-                        # continue
-                        # if generator_to_lift == AlgebraGenerator(1, 54, 1) and external_generator.deg > 19:
-                        # continue
-                        # if external_generator.module_index > 0:
-                        # if (external_generator.deg - external_generator.module_index) % external_generator.module_index == 0 and external_generator.deg > 4:
-                        # continue ####### fast fix for h_0 powers
-                        # if not external_generator == AlgebraGenerator(2, 9, 1) or not generator_to_lift == AlgebraGenerator(1, 4, 1):
-                        #     continue
-
                         print(
                             f"Computing Yoneda product: {
                                 external_generator} @@ {generator_to_lift}"
@@ -1655,15 +1456,6 @@ class MinimalResolution:
 
                         for morphism in list_lifted_map[-1].list_morphisms:
                             list_candidates_found = []
-
-                            # if external_generator == AlgebraGenerator(2, 12, 1) and generator_to_lift == AlgebraGenerator(0, 0, 1):
-                            #    DBG('list_image', morphism.list_list_images)
-                            #    DBG('list_dom_basis', morphism.list_dom_basis)
-                            #    DBG('list_cod_basis', morphism.list_cod_basis)
-                            #    DBG(morphism)
-                            #    DBG(len(list_lifted_map[-1].list_morphisms))
-                            #    #DBG(image == Element(self.A.monomial((0,)), external_generator))
-                            #    DBG('external_generator', external_generator)
 
                             for k in range(0, len(morphism.list_list_images)):
                                 list_image = morphism.list_list_images[k]
@@ -1713,8 +1505,6 @@ class MinimalResolution:
                                 break
 
         print("Yoneda products computed successfully.")
-
-        # printl(self.list_yoneda_products)
 
         return
 
@@ -1853,8 +1643,6 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators(
     HARDCODED_STEENROD_ALG_UNIT = A.monomial((0,))
 
     connectedness = 3  # |u| = 3
-
-    # ev_module_generator = Element(A.monomial((0,)), ExtendedAlgebraGenerator(-1, connectedness, 1, True, f"u"))
 
     for k in range(connectedness + 1, connectedness + max_deg):
         bool_free_module_generator = True
@@ -2000,7 +1788,7 @@ def callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations(
     ]:
         if not t == -1:
             print(t)
-    # sys.exit()
+
     print("-" * 120)
 
     return output_list
@@ -2165,8 +1953,6 @@ def callback_coh_p_even_hom_orbit_representation_sphere_rho_d_3_relations(
                 )
             )
 
-    # printl(output_list)
-    # sys.exit()
     l = []
     for item in output_list:
         if (
@@ -2183,14 +1969,13 @@ def callback_coh_p_even_hom_orbit_representation_sphere_rho_d_3_relations(
     ]:
         if not t == -1:
             print(t)
-    # sys.exit()
 
     return output_list
 
 
-##################################################################################
-##                                  SET UP                                      ##
-##################################################################################
+###############################################################################
+#                                   SET UP                                    #
+###############################################################################
 
 print_banner()
 
@@ -2239,29 +2024,13 @@ if not minimalResolution:
         MAX_NUMBER_OF_RELATIVE_DEGREES,
     )
 
-    # coh_sphere_presentation = FPModule(callback_coh_sphere_generators, callback_coh_sphere_relations, 0)
-    # minimalResolution.createModule(coh_sphere_presentation)
-    # minimalResolution.construct()
-
-    # minimalResolution.lift_test(minimalResolutionSphere)
-    # minimalResolution.compute_yoneda_products(minimalResolutionSphere)
-
-    # coh_rp_infty_presentation = FPModule(callback_coh_rp_infty_generators, callback_coh_rp_infty_relations, 20) # Finitely presented module to resolve
-    # coh_sphere_presentation = FPModule(callback_coh_sphere_generators, callback_coh_sphere_relations, 0)
-    # callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
-    # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
-    # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
-    # MAX_NUMBER_OF_RELATIVE_DEGREES
-    # )
-    # minimalResolution.createModule(callback_coh_p_odd_representation_sphere_rho_d_3_presentation) # Finitely presented module to resolve
-
     # callback_coh_p_odd_representation_sphere_rho_d_3_presentation = FPModule(
     #    "Cohomology of the 3-local sphere",  # "Cohomology of representation sphere S^{\\rho}_{D_3} (p: odd)",
     #    callback_coh_sphere_generators,  # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_generators,
     #    callback_coh_sphere_relations,  # callback_coh_p_odd_hom_orbit_representation_sphere_rho_d_3_relations,
     #    MAX_NUMBER_OF_RELATIVE_DEGREES,
     # )
-    #
+
     callback_coh_sphere_presentation = FPModule(
         "Cohomology of the 2-local sphere",
         callback_coh_sphere_generators,
@@ -2279,15 +2048,14 @@ if not minimalResolution:
     dump_object(minimalResolution, f"{str_output_file_module}__additive__")
 
 if BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE:
-    print(f"[+] BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE: True. Exiting.")
+    print("[+] BOOL_COMPUTE_ONLY_ADDITIVE_STRUCTURE: True. Exiting.")
     sys.exit()
 
-# Chain map lifts
 
 minimalResolution_lifts = load_object(f"{str_output_file_module}__lifts_")
 if not minimalResolution_lifts:
     cbk_filter = (
-        # if (x.module_index, x.deg - x.module_index) == (0, 18) else False
+
         lambda x: True
     )
     def cbk_max_deg(x): return MAX_NUMBER_OF_MODULES - x.deg
@@ -2306,9 +2074,9 @@ else:
 
     minimalResolution.retrieve_yoneda_products(minimalResolutionSphere)
 
-##################################################################################
-##                                    DRAW                                      ##
-##################################################################################
+###############################################################################
+#                                  DRAW                                       #
+###############################################################################
 
 
 def check_drawable_segment(
@@ -2326,9 +2094,9 @@ def check_drawable_segment(
             element_deg_2 = list_list_found_generators[module_index_2][
                 relative_deg_2
             ].deg
-            element_index_2 = list_list_found_generators[module_index_2][
-                relative_deg_2
-            ].index
+            # element_index_2 = list_list_found_generators[module_index_2][
+            #     relative_deg_2
+            # ].index
 
             if (
                 element_module_index_2 == element_module_index + y_shift
@@ -2340,11 +2108,8 @@ def check_drawable_segment(
     return bool_found_nontrivial_codomain
 
 
-# minimalResolution.print()
-# print(minimalResolution.toJson())
 print(minimalResolution.E2chartToJson())
 
-# printl(minimalResolution.yoneda_products_to_plot_coordinates())
 
 fig = go.Figure()
 

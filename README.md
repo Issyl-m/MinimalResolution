@@ -2,7 +2,7 @@
 
 Proof-of-concept of computing minimal resolutions over the mod $p$ Steenrod algebra developed by me. This program constructs a free resolution of a finitely presented $\mathbb{F}_p-$module as an $\mathcal{A}_p-$module. It also computes chain map lifts of cohomology classes to compute Yoneda products.
 
-# Requirements 
+# Requirements (Linux users)
 
 This software should be executed on ``GNU/Linux`` distributions.
 
@@ -20,7 +20,7 @@ You will get a plot resembling the computed `Ext groups` (``chart.html``), and t
 
 # Usage (non-Linux users)
 
-Alternatively, you can run this program on [Google Colab](https://colab.google/) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Issyl-m/MinimalResolution/blob/main/minrv1.ipynb). You will need to hardcode a finitely presented module and then call ``minimalResolution.createModule()`` before running `g.sh`.
+Alternatively, you can run this program on [Google Colab](https://colab.google/) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Issyl-m/MinimalResolution/blob/main/minrv1.ipynb). The Notebook contains cells intended to install everything for you. You will need to hardcode a finitely presented module and then call ``minimalResolution.createModule()`` before running `g.sh`.
 
 ![Output files](./img/download-files.jpg)
 
