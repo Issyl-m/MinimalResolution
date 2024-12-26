@@ -6,8 +6,8 @@ Proof-of-concept of computing minimal resolutions over the mod $p$ Steenrod alge
 
 This software should be executed on ``GNU/Linux`` distributions.
 
-1. Install ``Python``.
-2. Install ``SageMath``.
+1. Install ``Python`` (version >=3.12.5).
+2. Install ``SageMath`` (version >=10.4).
 3. Run ``pip install plotly``.
 4. Run ``pip install jsons``.
 
